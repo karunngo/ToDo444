@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
         view.setAdapter(adapter);
 //        list.add("んごすぎ");
 
+
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        //Enterキーを押すとExitTextの入力内容を送信(+ボタンを押すのと同じ)
         EditText editText1=(EditText)findViewById(R.id.editText);
         editText1.setOnKeyListener(new View.OnKeyListener(){
             @Override
@@ -63,18 +65,21 @@ public class MainActivity extends Activity {
 
     public void onEnter() {
 
+        //入力欄の設定
         EditText editText = (EditText) findViewById(R.id.editText);
         String text = editText.getText().toString();
 
-
         adapter.add(text);
 
+        //ソフトキーボードを隠すための設定とか
         InputMethodManager imm
                 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow //ソフトキーボードを隠す
+        imm.hideSoftInputFromWindow
                 (editText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-        System.out.println(text);
+        System.out.println(text); //入力内容
+
+        //入力後にEditTextの中身をclear
         editText.getText().clear();
     }
 
