@@ -69,7 +69,10 @@ public class MainActivity extends Activity {
         EditText editText = (EditText) findViewById(R.id.editText);
         String text = editText.getText().toString();
 
-        adapter.add(text);
+        // 空白判定。textがnullでないかつ文字列の長さが0より大きい時のみaddする。
+        if((text != null) && (text.length() > 0)){
+            adapter.add(text);
+        }
 
         //ソフトキーボードを隠すための設定とか
         InputMethodManager imm
