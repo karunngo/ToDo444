@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
 
         view = (ListView) findViewById(R.id.listView);
         list = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, list);
         view.setAdapter(adapter);
 //        list.add("んごすぎ");
 
