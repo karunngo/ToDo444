@@ -9,19 +9,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-
+import org.apache.commons.lang3.StringUtils;
 
 public class MainActivity extends Activity {
 
     private ArrayList<String> list;
     private ArrayAdapter<String> adapter;
     private ListView view;
+    private AdapterView.OnItemClickListener listViewOnItemClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class MainActivity extends Activity {
         String text = editText.getText().toString();
 
         // 空白判定。textがnullでないかつ文字列の長さが0より大きい時のみaddする。
-        if((text != null) && (text.length() > 0)){
+        if(StringUtils.isNotBlank(text)){
             adapter.add(text);
         }
 
