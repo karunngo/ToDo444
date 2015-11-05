@@ -3,6 +3,7 @@ package nemui.todo444;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +17,19 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.HttpStatus;
+
 
 public class MainActivity extends Activity {
 
@@ -24,6 +37,10 @@ public class MainActivity extends Activity {
     private ArrayAdapter<String> adapter;
     private ListView view;
     private AdapterView.OnItemClickListener listViewOnItemClickListener;
+
+    //通信に関する設定てか準備？
+    private static final String url ="http://133.27.171.234/ToDo444.php";
+    private static final HttpClient client =new DefaultHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +118,52 @@ public class MainActivity extends Activity {
         //入力後にEditTextの中身をclear
         editText.getText().clear();
     }
+
+    //phhGetってメソッドをつくっちゃう。スレッド機能もつけとくよ
+    public void phhGet() {
+        new Thread(new Runnable() {
+            HttpGet httpGet = new HttpGet(url); //getのための準備。listenerの準備みたいなの
+            @Override
+            public void run() {
+                try {
+                    HttpResponse httpResponse = client.execute(httpGet);//ここで実行！のはず
+                    String str = EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスをstringにする
+                    Log.d("HTTPGet", str); //デバック用のログ表示
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }
+
+        }).start();
+    }
+/*
+    //phhPutってメソッドをつくっちゃう。スレッド機能もつけとくよ
+    public void phhPost(☆) {
+        new Thread(new Runnable() {
+            HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
+            ArrayList<NameValuePair> params = new ArrayList <NameValuePair>();
+            ↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
+            　非推奨？　細けぇこたぁいいんだよ！　phpはこの名前で反応してくれるみたい
+
+
+            params.add( new BasicNameValuePair("taskName","var"));
+            //なんでaddが機能しないの!? んごーーーーー
+
+            @Override
+            public void run() {
+                try {
+                    httpPost.setEntity(new UrlEncodedFormEntity(params, "utf-8"));//コード変更
+                    HttpResponse httpResponse = httpPost.execute(httpPost);//実行するはず
+                    Log.d("HTTPGet", str); //デバック用のログ表示
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
+            }
+
+        }).start();
+    }
+*/
+
 
 
 
