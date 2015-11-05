@@ -138,15 +138,16 @@ public class MainActivity extends Activity {
     }
 
     //phhPutってメソッドをつくっちゃう。スレッド機能もつけとくよ
-    public void phhPost() {
+    public void phhPost(☆) {//☆に送りたいデータの形式をいれるべし。
         new Thread(new Runnable() {
             HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
             List <NameValuePair>  params = new ArrayList<NameValuePair> ();
             /*↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
             　非推奨？　細けぇこたぁいいんだよ！　phpはこの名前で反応してくれるみたい
             */
-            params.add( new BasicNameValuePair("taskName","var"));
+            params.add( new BasicNameValuePair("taskName",☆));
             //なんでaddが機能しないの!? んごーーーーー
+            //add(ry ("[a][b]","taskname") add(ry ("[a][c]","checkBox")みたいにやると、[a][b][c]で送れるっぽい
 
             @Override
             public void run() {
