@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
         });
 
 
+        //「+」ボタンについて
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
             }
         });
 
+        //「チェックしたタスクが消えるすごいボタン」について
         Button button2 = (Button) findViewById(R.id.button2);
         button2.setText("チェックしたタスクが消えるすごいボタン");
 
