@@ -136,16 +136,15 @@ public class MainActivity extends Activity {
 
         }).start();
     }
-/*
+
     //phhPutってメソッドをつくっちゃう。スレッド機能もつけとくよ
-    public void phhPost(☆) {
+    public void phhPost() {
         new Thread(new Runnable() {
             HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
-            ArrayList<NameValuePair> params = new ArrayList <NameValuePair>();
-            ↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
+            List <NameValuePair>  params = new ArrayList<NameValuePair> ();
+            /*↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
             　非推奨？　細けぇこたぁいいんだよ！　phpはこの名前で反応してくれるみたい
-
-
+            */
             params.add( new BasicNameValuePair("taskName","var"));
             //なんでaddが機能しないの!? んごーーーーー
 
@@ -153,8 +152,8 @@ public class MainActivity extends Activity {
             public void run() {
                 try {
                     httpPost.setEntity(new UrlEncodedFormEntity(params, "utf-8"));//コード変更
-                    HttpResponse httpResponse = httpPost.execute(httpPost);//実行するはず
-                    Log.d("HTTPGet", str); //デバック用のログ表示
+                    HttpResponse httpResponse = client.execute(httpPost);//実行するはず
+                //    Log.d("HTTPGet", str); //デバック用のログ表示
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
@@ -162,7 +161,7 @@ public class MainActivity extends Activity {
 
         }).start();
     }
-*/
+
 
 
 
