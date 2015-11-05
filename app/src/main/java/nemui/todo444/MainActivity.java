@@ -59,6 +59,9 @@ public class MainActivity extends Activity {
             }
         });
 
+        Button button2 = (Button) findViewById(R.id.button2);
+        button2.setText("チェックしたタスクが消えるすごいボタン");
+
         //Enterキーを押すとExitTextの入力内容を送信(+ボタンを押すのと同じ)
         EditText editText1=(EditText)findViewById(R.id.editText);
         editText1.setOnKeyListener(new View.OnKeyListener(){
