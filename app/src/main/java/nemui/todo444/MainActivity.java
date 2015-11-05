@@ -41,7 +41,14 @@ public class MainActivity extends Activity {
         view.setAdapter(adapter);
 //        list.add("んごすぎ");
 
+
         //リストの行をクリックした時のイベントリスナーを作る。
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //ここに処理を書く
+            }
+        });
 
 
         Button button = (Button) findViewById(R.id.button);
