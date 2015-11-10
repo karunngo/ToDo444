@@ -27,6 +27,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.HttpStatus;
 
@@ -40,6 +41,8 @@ public class MainActivity extends Activity {
 
     //通信に関する設定てか準備？
     private static final String url ="http://133.27.171.234/ToDo444.php";
+    private static final String testurl ="http://133.27.171.234/ToDotest.php";
+
     private static final HttpClient client =new DefaultHttpClient();
 
     @Override
@@ -113,6 +116,8 @@ public class MainActivity extends Activity {
         imm.hideSoftInputFromWindow
                 (editText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
+
+
         System.out.println(text); //入力内容
 
         //入力後にEditTextの中身をclear
@@ -122,7 +127,8 @@ public class MainActivity extends Activity {
     //phhGetってメソッドをつくっちゃう。スレッド機能もつけとくよ
     public void phhGet() {
         new Thread(new Runnable() {
-            HttpGet httpGet = new HttpGet(url); //getのための準備。listenerの準備みたいなの
+            // HttpGet httpGet = new HttpGet(url); //getのための準備
+            HttpGet httpGet =new HttpGet(testurl);
             @Override
             public void run() {
                 try {
@@ -136,17 +142,23 @@ public class MainActivity extends Activity {
 
         }).start();
     }
+    /*
 
-    //phhPutってメソッドをつくっちゃう。スレッド機能もつけとくよ
-    public void phhPost(☆) {//☆に送りたいデータの形式をいれるべし。
+    public void phhPost(int id, final String str,int checked) {
         new Thread(new Runnable() {
             HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
-            List <NameValuePair>  params = new ArrayList<NameValuePair> ();
-            /*↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
+            List <BasicNameValuePair>  param = new ArrayList<BasicNameValuePair> ();
+            /↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
             　非推奨？　細けぇこたぁいいんだよ！　phpはこの名前で反応してくれるみたい
-            */
-            params.add( new BasicNameValuePair("taskName",☆));
-            //なんでaddが機能しないの!? んごーーーーー
+
+            BasicNameValuePair param1 =new BasicNameValuePair ("id",str);
+            BasicNameValuePair param2 =new BasicNameValuePair ("taskname",str);
+            BasicNameValuePair param3 =new BasicNameValuePair ("checked",checked);
+
+            params.add(param1);
+
+            //BasicNameValuePair params[2] ={param1,param2,param3};
+
             //add(ry ("[a][b]","taskname") add(ry ("[a][c]","checkBox")みたいにやると、[a][b][c]で送れるっぽい
 
             @Override
@@ -161,9 +173,7 @@ public class MainActivity extends Activity {
             }
 
         }).start();
-    }
-
-
+    }*/
 
 
 
