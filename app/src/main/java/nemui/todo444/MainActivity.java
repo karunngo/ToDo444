@@ -142,38 +142,44 @@ public class MainActivity extends Activity {
 
         }).start();
     }
-    /*
 
-    public void phhPost(int id, final String str,int checked) {
-        new Thread(new Runnable() {
-            HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
-            List <BasicNameValuePair>  param = new ArrayList<BasicNameValuePair> ();
-            /↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
-            　非推奨？　細けぇこたぁいいんだよ！　phpはこの名前で反応してくれるみたい
+    public void phhPost(int id, String str,int checked) {
+        String S_id = String.valueOf(id);
+        String S_checked = String.valueOf(checked);
 
-            BasicNameValuePair param1 =new BasicNameValuePair ("id",str);
-            BasicNameValuePair param2 =new BasicNameValuePair ("taskname",str);
-            BasicNameValuePair param3 =new BasicNameValuePair ("checked",checked);
+        Thread thread = new postThread(url,S_id,str,S_checked);
 
-            params.add(param1);
-
-            //BasicNameValuePair params[2] ={param1,param2,param3};
-
-            //add(ry ("[a][b]","taskname") add(ry ("[a][c]","checkBox")みたいにやると、[a][b][c]で送れるっぽい
-
+        /*
+        //Threadにデータを受け渡す必要あり。要検索。
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                String S_id = String.valueOf(id);
+                String S_checked = String.valueOf(checked);
+
+                List <BasicNameValuePair>  params = new ArrayList<BasicNameValuePair> ();
+                BasicNameValuePair param1 =new BasicNameValuePair ("id",S_id);
+                BasicNameValuePair param2 =new BasicNameValuePair ("taskName",str);
+                BasicNameValuePair param3 =new BasicNameValuePair ("checked",S_checked);
+        //↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
+            　非推奨？　細けぇこたぁいいんだよ！　phpは""で囲った名前に反応するみたい
+                params.add(param1);
+                params.add(param2);
+                params.add(param3);
+
                 try {
+                    HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
                     httpPost.setEntity(new UrlEncodedFormEntity(params, "utf-8"));//コード変更
                     HttpResponse httpResponse = client.execute(httpPost);//実行するはず
-                //    Log.d("HTTPGet", str); //デバック用のログ表示
+                   //Log.d("HTTPGet", str); //デバック用のログ表示
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }
             }
 
-        }).start();
-    }*/
+        });
+        thread.start(); */
+    }
 
 
 
@@ -199,3 +205,42 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+class postThread extends Thread{
+    private String id;
+    private String name;
+    private String checked;
+    private String url;
+    private HttpClient client =new DefaultHttpClient();
+
+    public postThread(String url,String id,String name, String checked){
+        this.url=url;
+        this.id = id;
+        this.name = name;
+        this.checked = checked;
+    }
+     @Override
+     public void run() {
+            List <BasicNameValuePair>  params = new ArrayList<BasicNameValuePair> ();
+            BasicNameValuePair param1 =new BasicNameValuePair ("id",id);
+            BasicNameValuePair param2 =new BasicNameValuePair ("taskName",name);
+            BasicNameValuePair param3 =new BasicNameValuePair ("checked",checked);
+        /*↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
+            　非推奨？　細けぇこたぁいいんだよ！　phpは""で囲った名前に反応するみたい */
+            params.add(param1);
+            params.add(param2);
+            params.add(param3);
+
+            try {
+                HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
+                httpPost.setEntity(new UrlEncodedFormEntity(params, "utf-8"));//コード変更
+                HttpResponse httpResponse = client.execute(httpPost);//実行するはず
+                //Log.d("HTTPGet", str); //デバック用のログ表示
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+     }
+
+}
+
+
