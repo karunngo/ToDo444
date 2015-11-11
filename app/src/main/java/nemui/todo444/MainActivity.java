@@ -83,10 +83,16 @@ public class MainActivity extends Activity {
         //「チェックしたタスクが消えるすごいボタン」について
         Button button2 = (Button) findViewById(R.id.button2);
         button2.setText("チェックしたタスクが消えるすごいボタン");
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDelete();
+            }
+        });
 
         //Enterキーを押すとExitTextの入力内容を送信(+ボタンを押すのと同じ)
         EditText editText1=(EditText)findViewById(R.id.editText);
-        editText1.setOnKeyListener(new View.OnKeyListener(){
+        editText1.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN
@@ -124,15 +130,19 @@ public class MainActivity extends Activity {
         editText.getText().clear();
     }
 
-    //phhGetってメソッドをつくっちゃう。スレッド機能もつけとくよ
-    public void phhGet() {
+    public void onDelete(){
+        //チェックボックスが入ってる番号を探り、その番号をhttpDelete();する。
+        httpGet();
+    }
+
+    public void httpGet() {
         new Thread(new Runnable() {
             // HttpGet httpGet = new HttpGet(url); //getのための準備
             HttpGet httpGet =new HttpGet(testurl);
             @Override
             public void run() {
                 try {
-                    HttpResponse httpResponse = client.execute(httpGet);//ここで実行！のはず
+                    HttpResponse httpResponse = client.execute(httpGet);
                     String str = EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスをstringにする
                     Log.d("HTTPGet", str); //デバック用のログ表示
                 } catch (Exception ex) {
@@ -143,7 +153,7 @@ public class MainActivity extends Activity {
         }).start();
     }
 
-    public void phhPost(int id, String str,int checked) {
+    public void httpPost(int id, String str,int checked) {
         String S_id = String.valueOf(id);
         String S_checked = String.valueOf(checked);
 
@@ -181,9 +191,15 @@ public class MainActivity extends Activity {
         thread.start(); */
     }
 
+    public void phpDelete(int id) {
+        String S_id = String.valueOf(id);
+        Thread thread = new postThread(url,S_id,"","0");
+        //デリートは名前なし、checkboxがなしのデータをポストする扱いにする
+    }
 
 
-    @Override
+
+        @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -203,6 +219,11 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onDestroy(Bundle savedInstanceState){
+        client.getConnectionManager().shutdown();
+
     }
 }
 
@@ -238,6 +259,8 @@ class postThread extends Thread{
                 //Log.d("HTTPGet", str); //デバック用のログ表示
             } catch (Exception ex) {
                 System.out.println(ex);
+            }finally{
+                client.getConnectionManager().shutdown();
             }
      }
 
