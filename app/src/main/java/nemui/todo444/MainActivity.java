@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
 
     //通信に関する設定てか準備？
     private static final String url ="http://133.27.171.234/ToDo444.php";
-    private static final String testurl ="http://133.27.171.234/ToDotest.php";
+//    private static final String testurl ="http://133.27.171.234/ToDotest.php";
 
     private static final HttpClient client =new DefaultHttpClient();
 
@@ -59,8 +59,9 @@ public class MainActivity extends Activity {
         list = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, list);
         view.setAdapter(adapter);
-//        list.add("んごすぎ");
 
+        //保存してあるデータを読み込む
+        ListUpdate();
 
         //リストの行をクリックした時のイベントリスナーを作る。
         view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,6 +115,8 @@ public class MainActivity extends Activity {
         // 空白判定。textがnullでないかつ文字列の長さが0より大きい時のみaddする。
         if(StringUtils.isNotBlank(text)){
             adapter.add(text);
+            int this_ID = list.size(); //list.sizeは要素の数を参照。list[2]まであるとき３を変えす
+            httpPost(this_ID,text,0);
         }
 
         //ソフトキーボードを隠すための設定とか
@@ -132,25 +135,23 @@ public class MainActivity extends Activity {
 
     public void onDelete(){
         //チェックボックスが入ってる番号を探り、その番号をhttpDelete();する。
+        httpDelete(number);
+        ListUpdate();
+
+    }
+
+    public void ListUpdate(){
         httpGet();
+        //もらったデータの数を数える＋名前を取り出さないと
+        for(int i=0;i<10;i++){
+            list.set(i,"");
+        }
+
     }
 
     public void httpGet() {
-        new Thread(new Runnable() {
-            // HttpGet httpGet = new HttpGet(url); //getのための準備
-            HttpGet httpGet =new HttpGet(testurl);
-            @Override
-            public void run() {
-                try {
-                    HttpResponse httpResponse = client.execute(httpGet);
-                    String str = EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスをstringにする
-                    Log.d("HTTPGet", str); //デバック用のログ表示
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
-            }
-
-        }).start();
+        Thread thread = new getThread(url);
+        thread.start();
     }
 
     public void httpPost(int id, String str,int checked) {
@@ -158,42 +159,11 @@ public class MainActivity extends Activity {
         String S_checked = String.valueOf(checked);
 
         Thread thread = new postThread(url,S_id,str,S_checked);
-
-        /*
-        //Threadにデータを受け渡す必要あり。要検索。
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String S_id = String.valueOf(id);
-                String S_checked = String.valueOf(checked);
-
-                List <BasicNameValuePair>  params = new ArrayList<BasicNameValuePair> ();
-                BasicNameValuePair param1 =new BasicNameValuePair ("id",S_id);
-                BasicNameValuePair param2 =new BasicNameValuePair ("taskName",str);
-                BasicNameValuePair param3 =new BasicNameValuePair ("checked",S_checked);
-        //↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
-            　非推奨？　細けぇこたぁいいんだよ！　phpは""で囲った名前に反応するみたい
-                params.add(param1);
-                params.add(param2);
-                params.add(param3);
-
-                try {
-                    HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
-                    httpPost.setEntity(new UrlEncodedFormEntity(params, "utf-8"));//コード変更
-                    HttpResponse httpResponse = client.execute(httpPost);//実行するはず
-                   //Log.d("HTTPGet", str); //デバック用のログ表示
-                } catch (Exception ex) {
-                    System.out.println(ex);
-                }
-            }
-
-        });
-        thread.start(); */
+        thread.start();
     }
 
-    public void phpDelete(int id) {
-        String S_id = String.valueOf(id);
-        Thread thread = new postThread(url,S_id,"","0");
+    public void httpDelete(int id) {
+        httpPost(id,"",0);
         //デリートは名前なし、checkboxがなしのデータをポストする扱いにする
     }
 
@@ -226,6 +196,29 @@ public class MainActivity extends Activity {
 
     }
 }
+
+class getThread extends Thread{
+    private String url;
+    private HttpClient client =new DefaultHttpClient();
+    private HttpGet httpGet;
+
+    public getThread(String url){
+        this.url=url;
+        this.httpGet =new HttpGet(url);
+    }
+    public void run(){
+        try {
+            HttpResponse httpResponse = client.execute(httpGet);
+        String str = EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスをstringにする
+        Log.d("HTTPGet", str); //デバック用のログ表示
+    } catch (Exception ex) {
+        System.out.println(ex);
+    }finally{
+        client.getConnectionManager().shutdown();
+    }}
+}
+
+
 
 class postThread extends Thread{
     private String id;
