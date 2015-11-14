@@ -134,10 +134,9 @@ public class MainActivity extends Activity {
     }
 
     public void onDelete(){
-        //チェックボックスが入ってる番号を探り、その番号をhttpDelete();する。
-        httpDelete(number);
+        //チェックボックスが入ってるid番号を探り、その番号をhttpDelete();する。
+        httpPost(id, "", 0);
         ListUpdate();
-
     }
 
     public void ListUpdate(){
@@ -162,10 +161,7 @@ public class MainActivity extends Activity {
         thread.start();
     }
 
-    public void httpDelete(int id) {
-        httpPost(id,"",0);
-        //デリートは名前なし、checkboxがなしのデータをポストする扱いにする
-    }
+        //デリートは名前なし、checkboxがなしのデータをポストする扱いにす
 
 
 
@@ -201,6 +197,11 @@ class getThread extends Thread{
     private String url;
     private HttpClient client =new DefaultHttpClient();
     private HttpGet httpGet;
+    private String jsonData;
+
+    public String getData(){
+        return this.jsonData;
+    }
 
     public getThread(String url){
         this.url=url;
@@ -209,8 +210,12 @@ class getThread extends Thread{
     public void run(){
         try {
             HttpResponse httpResponse = client.execute(httpGet);
-        String str = EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスをstringにする
-        Log.d("HTTPGet", str); //デバック用のログ表示
+        int status = httpResponse.getStatusLine().getStatusCode();
+            if(HttpStatus.SC_OK == status){
+                Log.d("gettest","getに成功") ;
+                this.jsonData= EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスを保存
+                Log.d("HTTPGet", jsonData); //デバック用のログ表示
+            }
     } catch (Exception ex) {
         System.out.println(ex);
     }finally{
@@ -239,17 +244,15 @@ class postThread extends Thread{
             BasicNameValuePair param1 =new BasicNameValuePair ("id",id);
             BasicNameValuePair param2 =new BasicNameValuePair ("taskName",name);
             BasicNameValuePair param3 =new BasicNameValuePair ("checked",checked);
-        /*↑送る用のリスト。NameValuePairってのは、名前と要素を一緒に送れるらしい。
-            　非推奨？　細けぇこたぁいいんだよ！　phpは""で囲った名前に反応するみたい */
             params.add(param1);
             params.add(param2);
             params.add(param3);
 
             try {
-                HttpPost httpPost = new HttpPost(url); //準備。phhGet()参照
+                HttpPost httpPost = new HttpPost(url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params, "utf-8"));//コード変更
-                HttpResponse httpResponse = client.execute(httpPost);//実行するはず
-                //Log.d("HTTPGet", str); //デバック用のログ表示
+                HttpResponse httpResponse = client.execute(httpPost);//実行
+
             } catch (Exception ex) {
                 System.out.println(ex);
             }finally{
