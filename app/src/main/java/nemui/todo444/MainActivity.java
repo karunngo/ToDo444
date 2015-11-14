@@ -30,6 +30,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MainActivity extends Activity {
@@ -198,9 +201,15 @@ class getThread extends Thread{
     private HttpClient client =new DefaultHttpClient();
     private HttpGet httpGet;
     private String jsonData;
+    private JSONObject jsonObject;
+    private JSONArray jsonArray;
 
-    public String getData(){
-        return this.jsonData;
+    public JSONObject getJsonObject(){
+        return this.jsonObject;
+    }
+
+    public JSONArray getJsonArray(){
+        return this.jsonArray;
     }
 
     public getThread(String url){
@@ -215,6 +224,13 @@ class getThread extends Thread{
                 Log.d("gettest","getに成功") ;
                 this.jsonData= EntityUtils.toString(httpResponse.getEntity(), "UTF-8"); //レスポンスを保存
                 Log.d("HTTPGet", jsonData); //デバック用のログ表示
+            }
+            //JSON解析する
+            try{
+                this.jsonObject = new JSONObject(this.jsonData);
+                this.jsonArray = this.jsonObject.getJSONArray("response");
+            }catch(JSONException e){
+                Log.e("Errer","Jsonデータがおかしいよ");
             }
     } catch (Exception ex) {
         System.out.println(ex);
